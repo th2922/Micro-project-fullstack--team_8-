@@ -1,0 +1,28 @@
+{% extends 'marketplace/base.html' %}
+
+{% block content %}
+<div class="card" style="max-width: 700px; margin: 2rem auto;">
+    <h2 style="text-align: center; color: #667eea; margin-bottom: 0.5rem;">My Profile</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 2rem; font-size: 1.1rem;"><strong>{{ user.first_name }} {{ user.last_name }}</strong> (@{{ user.username }})</p>
+    
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <span class="badge badge-open" style="font-size: 1rem; padding: 0.5rem 1.5rem;">{{ profile.get_user_type_display }}</span>
+    </div>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <small style="color: red;">{{ field.errors }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">Update Profile</button>
+    </form>
+</div>
+{% endblock %}

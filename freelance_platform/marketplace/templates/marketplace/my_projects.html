@@ -1,0 +1,29 @@
+{% extends 'marketplace/base.html' %}
+
+{% block content %}
+<h2 style="color: white; margin-bottom: 2rem;">My Projects</h2>
+
+<div class="grid">
+    {% for project in projects %}
+        <div class="project-card">
+            <h3>{{ project.title }}</h3>
+            <p style="color: #666; margin-bottom: 1rem;">{{ project.description|truncatewords:20 }}</p>
+            
+            {% if project.client == user %}
+                <p style="color: #667eea; font-weight: 500;">You posted this project</p>
+            {% else %}
+                <p style="color: #28a745; font-weight: 500;">You are working on this</p>
+            {% endif %}
+            
+            <div class="project-meta">
+                <span style="font-weight: bold; color: #28a745;">${{ project.budget }}</span>
+                <span class="badge badge-{{ project.status }}">{{ project.get_status_display }}</span>
+            </div>
+            <p style="color: #667eea; font-weight: 500; margin-top: 0.5rem;">{{ project.bids.count }} bid(s)</p>
+            <a href="{% url 'project_detail' project.pk %}" class="btn btn-primary" style="width: 100%; margin-top: 1rem; text-align: center;">View Details</a>
+        </div>
+    {% empty %}
+        <p style="color: white; text-align: center; grid-column: 1/-1;">No projects yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

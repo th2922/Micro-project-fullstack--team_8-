@@ -1,0 +1,77 @@
+{% extends 'marketplace/base.html' %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 2rem;">
+        <div>
+            <h2 style="color: #667eea;">{{ project.title }}</h2>
+            <p style="color: #888;">Posted by: {{ project.client.username }}</p>
+        </div>
+        <span class="badge badge-{{ project.status }}" style="font-size: 1rem; padding: 0.5rem 1rem;">{{ project.get_status_display }}</span>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-bottom: 2rem;">
+        <h3 style="margin-bottom: 1rem;">Project Details</h3>
+        <p style="margin-bottom: 1rem; line-height: 1.8;">{{ project.description }}</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem;">
+            <div>
+                <strong style="color: #666;">Budget:</strong>
+                <p style="color: #28a745; font-size: 1.3rem; font-weight: bold;">${{ project.budget }}</p>
+            </div>
+            <div>
+                <strong style="color: #666;">Deadline:</strong>
+                <p style="font-size: 1.1rem;">{{ project.deadline }}</p>
+            </div>
+            <div>
+                <strong style="color: #666;">Total Bids:</strong>
+                <p style="font-size: 1.1rem;">{{ bids.count }}</p>
+            </div>
+        </div>
+    </div>
+    
+    {% if user.is_authenticated and user.userprofile.user_type == 'freelancer' and project.status == 'open' and not user_has_bid %}
+        <a href="{% url 'place_bid' project.pk %}" class="btn btn-success" style="padding: 1rem 2rem; font-size: 1.1rem;">Place Your Bid</a>
+    {% elif user_has_bid %}
+        <p style="color: #28a745; font-weight: bold;">You have already placed a bid on this project.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3 style="margin-bottom: 1.5rem;">Bids ({{ bids.count }})</h3>
+    
+    {% for bid in bids %}
+        {% if bid.is_accepted %}
+        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-bottom: 1rem; border: 2px solid #28a745;">
+        {% else %}
+        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 5px; margin-bottom: 1rem;">
+        {% endif %}
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <h4 style="color: #667eea; margin-bottom: 0.5rem;">{{ bid.freelancer.username }}</h4>
+                    <p style="color: #666; margin-bottom: 1rem;">{{ bid.proposal }}</p>
+                    
+                    <div style="display: flex; gap: 2rem;">
+                        <div>
+                            <strong style="color: #666;">Bid Amount:</strong>
+                            <p style="color: #28a745; font-size: 1.2rem; font-weight: bold;">${{ bid.amount }}</p>
+                        </div>
+                        <div>
+                            <strong style="color: #666;">Delivery Time:</strong>
+                            <p style="font-size: 1.1rem;">{{ bid.delivery_time }} days</p>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if bid.is_accepted %}
+                    <span class="badge badge-completed" style="font-size: 1rem; padding: 0.5rem 1rem;">Accepted</span>
+                {% elif project.client == user and project.status == 'open' %}
+                    <a href="{% url 'accept_bid' bid.id %}" class="btn btn-success">Accept Bid</a>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p style="color: #888; text-align: center;">No bids yet. Be the first to bid!</p>
+    {% endfor %}
+</div>
+{% endblock %}

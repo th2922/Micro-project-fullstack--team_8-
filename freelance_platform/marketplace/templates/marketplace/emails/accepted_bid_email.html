@@ -1,0 +1,18 @@
+<html>
+  <body style="font-family: Arial, sans-serif; color: #333;">
+    <div style="max-width: 700px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: #667eea;">Good news — your bid was accepted!</h2>
+      <p>Hi <strong>{{ freelancer.get_full_name|default:freelancer.username }}</strong>,</p>
+      <p>Your bid for the project "<strong>{{ project.title }}</strong>" has been accepted by the client (<strong>{{ project.client.username }}</strong>).</p>
+
+      <ul>
+        <li><strong>Bid amount:</strong> ${{ bid.amount }}</li>
+        <li><strong>Delivery time:</strong> {{ bid.delivery_time }} days</li>
+      </ul>
+
+      <p>Log in to your account to view the project details and next steps.</p>
+
+      <p>Thanks,<br>{{ site_name }} Team</p>
+    </div>
+  </body>
+</html>

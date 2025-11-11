@@ -1,0 +1,47 @@
+{% extends 'marketplace/base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="card" style="background: white; border-left: 5px solid #667eea; margin-bottom: 2rem; box-shadow: 0 3px 10px rgba(102, 126, 234, 0.15);">
+    <h2 style="color: #667eea; margin-bottom: 0.5rem;">Welcome back, {{ user.username }}!</h2>
+    <p style="color: #666; font-size: 1rem;">Ready to find your next opportunity? Let's get started.</p>
+</div>
+{% endif %}
+
+<div class="card" style="text-align: center; background: white;">
+    <h1 style="color: #667eea; font-size: 2.5rem; margin-bottom: 1rem;">Welcome to FreelanceHub</h1>
+    <p style="font-size: 1.2rem; color: #666; margin-bottom: 2rem;">Connect clients with talented freelancers worldwide</p>
+    
+    {% if not user.is_authenticated %}
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a href="{% url 'register' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Get Started</a>
+            <a href="{% url 'project_list' %}" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 2rem;">Browse Projects</a>
+        </div>
+    {% else %}
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a href="{% url 'project_list' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">View All Projects</a>
+            {% if user.userprofile.user_type == 'client' %}
+                <a href="{% url 'create_project' %}" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 2rem;">Post a Project</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<h2 style="color: white; text-align: center; margin: 3rem 0 2rem;">Latest Projects</h2>
+
+<div class="grid">
+    {% for project in projects %}
+        <div class="project-card">
+            <h3>{{ project.title }}</h3>
+            <p style="color: #666; margin-bottom: 1rem;">{{ project.description|truncatewords:20 }}</p>
+            <div class="project-meta">
+                <span style="font-weight: bold; color: #28a745;">${{ project.budget }}</span>
+                <span class="badge badge-{{ project.status }}">{{ project.get_status_display }}</span>
+            </div>
+            <a href="{% url 'project_detail' project.pk %}" class="btn btn-primary" style="width: 100%; margin-top: 1rem; text-align: center;">View Details</a>
+        </div>
+    {% empty %}
+        <p style="color: white; text-align: center; grid-column: 1/-1;">No projects available yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

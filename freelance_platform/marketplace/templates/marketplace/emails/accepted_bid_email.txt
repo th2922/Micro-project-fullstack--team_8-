@@ -1,0 +1,15 @@
+Hello {{ freelancer.get_full_name|default:freelancer.username }},
+
+Good news — your bid for the project "{{ project.title }}" has been accepted by the client.
+
+Project: {{ project.title }}
+Client: {{ project.client.username }}
+Bid amount: ${{ bid.amount }}
+Delivery time (days): {{ bid.delivery_time }}
+
+You can view the project here once logged in.
+
+Thank you for using {{ site_name }}!
+
+--
+{{ site_name }} Team
